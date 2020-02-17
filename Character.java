@@ -1,4 +1,4 @@
-package project3;
+package project4;
 
 /**
  * Character class holds all the information for a given character.
@@ -12,6 +12,14 @@ public class Character implements Comparable<Character> {
 	private String motherName; 
 	private boolean isPatriarch; 
 	private boolean isMatriarch;
+	
+	/**
+	 * A character constructor that takes in one parameter.
+	 * @param name (name of the character)
+	 */
+	public Character(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * A character constructor that takes in three parameters.

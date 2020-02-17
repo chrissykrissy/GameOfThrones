@@ -1,4 +1,4 @@
-package project3;
+package project4;
 
 /**
  * Battle class holds all the information for a given battle

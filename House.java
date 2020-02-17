@@ -1,4 +1,4 @@
-package project3;
+package project4;
 
 /**
  * House class holds all the information about the house.

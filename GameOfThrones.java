@@ -1,4 +1,4 @@
-package project3;
+package project4;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -98,10 +98,48 @@ public class GameOfThrones {
 			}
 		}
 		cList.sort();
+		
+		pqLinkedList<Prediction> predictionsLL = new pqLinkedList<Prediction>();
+		pqMyArrayList<Prediction> predictionsAL = new pqMyArrayList<Prediction>();
+		
+		String pdFile = "data/predictions.csv";
+		File p = new File(pdFile);
+
+		//check whether file can be read
+		if (!p.canRead()) {
+			System.err.printf("Error : cannot read" + "data from file%s", pdFile);
+			System.exit(1);
+		}
+		Scanner inputFileP = null;
+		try {
+			inputFileP = new Scanner(p);
+		} catch (FileNotFoundException e) {
+			System.err.printf("Error : cannot read" + "data from file%s", pdFile);
+			System.exit(1);
+		}
+		inputFileP.nextLine();		//skips the first line because it contains general information
+		while (inputFileP.hasNextLine()) {
+			String line = inputFileP.nextLine();
+			String[] line_split = line.split(",");
+			
+			String plod = line_split[0];
+			String character = line_split[1];
+			
+			float Fplod = Float.parseFloat(plod);
+			Character Ccharacter = new Character(character);	
+			
+			Prediction prediction = new Prediction(Fplod,Ccharacter);
+			
+			predictionsLL.insert(prediction);
+			predictionsAL.insert(prediction);
+			
+		}
+
+		int structure = 0;			//structure indicator (0 : default (sLinkedList), 1 : MyArrayList)
 
 		while (true) {
 			//gets user information
-			System.out.print("Enter a character name (or type \"all\" for all characters,\"family tree\" for a family tree of all houses, or \"exit\" to exit): ");
+			System.out.print("Enter a character name (or type \"all\" for all characters,\"family tree\" for a family tree of all houses,\n\"remove all\" to remove all characters, \"remove next\" to remove the next character,\n\"use sLinkedList\" to use the linked list heap, \"use MyArrayList\" to use the MyArrayList heap,\n\"LLTD\" to see which character is the least likely to die,\nor \"exit\" to exit): ");
 			Scanner userInput = new Scanner(System.in);
 			String cName = userInput.nextLine();
 
@@ -122,6 +160,66 @@ public class GameOfThrones {
 					hList.get(n).makeFamTree();
 					hList.get(n).getFamilyTree().printTree();
 					System.out.print("\n");
+				}
+				//if user inputs "use sLinkedList" the program sets the structure to 0 which is default (sLinkedList)
+			}else if (cName.equalsIgnoreCase("use sLinkedList")) {
+				System.out.println("Now using sLinkedList!");
+				structure = 0;
+				
+				//if user inputs "use MyArrayList" the program sets the structure to 1 which is MyArrayList
+			}else if (cName.equalsIgnoreCase("use MyArrayList")) {
+				System.out.println("Now using MyArrayList!");
+				structure = 1;
+				
+				//if user inputs "remove next" the program removes the character with lowest prediction from list (0 : sLinkedList, 1: MyArrayList)
+				//if there are no more characters to remove prints the error message
+			}else if (cName.equalsIgnoreCase("remove next")) {
+				if (structure == 0) {
+					if (predictionsLL.size == 0) {
+						System.err.println("No more characters can be removed!");
+					}else {
+						System.out.println(" Removed: " + predictionsLL.remove());
+					}
+				}
+				if (structure == 1) {
+					if (predictionsAL.getHeap().size == 0) {
+						System.err.println("No more characters can be removed!");
+					}else {	
+						System.out.println(" Removed: " + predictionsAL.remove());
+					}
+				}
+				
+				//if user inputs "remove all" the program removes all the characters in the list
+			}else if (cName.equalsIgnoreCase("remove all")) {
+				if (structure == 0) {
+					int pqsLLsize = predictionsLL.size;
+					for (int s = 0; s < pqsLLsize; s++) {
+						System.out.println(s + " Removed: " + predictionsLL.remove());
+					}
+				}
+				else if (structure == 1) {
+					int pqALsize = predictionsAL.getHeap().size;
+					for (int ALs = 0; ALs < pqALsize; ALs++) {
+						System.out.println(ALs + " Removed: " + predictionsAL.remove());
+					}
+				}
+				
+				//if user inputs "LLTD" the program prints character with the lowest prediction without deleting them in the list
+				//prints error message when there's no character in the list
+			}else if (cName.equalsIgnoreCase("LLTD")) {
+				if (structure == 0) {
+					if (predictionsLL.peek() == null) {
+						System.err.println("There is no character in the list.");
+					}else {
+						System.out.println("LLTD: "+predictionsLL.peek());
+					}
+				}
+				else if (structure == 1) {
+					if (predictionsAL.peek() == null) {
+						System.err.println("There is no Character in the list.");
+					}else {
+						System.out.println("LLTD: "+predictionsAL.peek());
+					}
 				}
 			}
 			else {
@@ -148,11 +246,12 @@ public class GameOfThrones {
 					}
 				// if the user inputs an invalid character name, then the program notifies the user that the input is invalid.
 			}else if (!cList.contains(new Character (cName,null,null,null,new sLinkedList<Battle>()))) {
-				System.err.println("Character not found!" + '\n');
+				System.err.println("Character or command not found!" + '\n');
 			}
 		}
 		inputFile.close();
 		inputFileH.close();
+		inputFileP.close();
 	}
 }
 }
