@@ -1,4 +1,4 @@
-package project1;
+package project2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,17 +6,27 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.*;
 
+/**
+ *Game of Thrones program gets character name input from the user,
+ *and prints the output of input character's allegiances and battle information on the screen.
+ * @author Chrissy Jeon (jj2174)
+ */
 public class GameOfThrones {
 
+	/**
+	 *This is the main method that is responsible for opening and reading the data files, 
+	 *instantiating the Character and Battle objects,
+	 *obtaining user input, and printing out responses.
+	 * @throws FileNotFoundException on file read errors
+	 */
 	public static void main(String[] args) {
 
-		MyArrayList<Battle> list = new MyArrayList<>();
+		sLinkedList<Battle> list = new sLinkedList<Battle>();
 
-		//read the battle file
 		String battleFile = "data/battles.csv";
 		File b = new File(battleFile);
 
-		//catch FileNotFoundException if cannot read file
+		//check whether the file can be read
 		if (!b.canRead()) {
 			System.err.printf("Error : cannot read" + "data from file%s", battleFile);
 			System.exit(1);
@@ -28,12 +38,12 @@ public class GameOfThrones {
 			System.err.printf("Error : cannot read" + "data from file%s", battleFile);
 			System.exit(1);
 		}
-
-		//put object data into the list
+		inputFile.nextLine();			//skips the first line because it contains general information
 		while (inputFile.hasNextLine()) {
 			String lines = inputFile.nextLine();
 			String[] lines_split = lines.split(",");
 
+			//instantiate the battle class
 			String bName = lines_split[0];
 			String attackerKing = lines_split[1];
 			String defenderKing = lines_split[2];
@@ -41,17 +51,16 @@ public class GameOfThrones {
 			String battleType = lines_split[4];
 			String location = lines_split[5];
 			String region = lines_split[6];
-			list.add(new Battle(bName, attackerKing, defenderKing, attackerOutcome, battleType, location, region));
+			list.addLast(new Battle(bName, attackerKing, defenderKing, attackerOutcome, battleType, location, region));
+		
 		}
 
-		MyArrayList<Character> cList = new MyArrayList<Character>();
-		ArrayList<String> validCNames = new ArrayList<String>();
+		sLinkedList<Character> cList = new sLinkedList<Character>();
 
-		//read the character file
 		String characterFile = "data/characters.csv";
 		File c = new File(characterFile);
 
-		//catch FileNotFoundException if cannot read file
+		//check whether file can be read
 		if (!c.canRead()) {
 			System.err.printf("Error : cannot read" + "data from file%s", characterFile);
 			System.exit(1);
@@ -63,52 +72,52 @@ public class GameOfThrones {
 			System.err.printf("Error : cannot read" + "data from file%s", characterFile);
 			System.exit(1);
 		}
-		
-		//put object data into the list
+		inputFile2.nextLine();		//skips the first line because it contains general information
 		while (inputFile2.hasNextLine()) {
 			String line = inputFile2.nextLine();
 			String[] line_split = line.split(",");
 
+			//instantiate the character class
 			String name = line_split[0];
 			String allegiances = line_split[1];
-			cList.add(new Character(name, allegiances, list));
-			validCNames.add(name.toLowerCase());
-			cList.sort();
+			cList.addLast(new Character(name, allegiances, list));
 
+			
 		}
+		cList.sort();
 
-		//loop until user inputs "exit"
 		while (true) {
+			//gets user information
 			System.out.print("Enter a character name (or type \"all\" for all characters, or \"exit\" to exit): ");
 			Scanner userInput = new Scanner(System.in);
 			String cName = userInput.nextLine();
 
+			//if user inputs "exit" the program breaks
 			if (cName.equalsIgnoreCase("exit")) {
 				break;
 				
-			//when user inputs "all" give all the list of battles
+			//if user inputs "all" the program outputs all the character informations relating to characters	
 			} else if (cName.equalsIgnoreCase("all")) {
 				for (int j = 0; j < cList.size(); j++) {
-					if (cList.get(j).getBattles().size() > 0)
-						System.out.println(cList.get(j).toString());
+						System.out.println(cList.get(j));
 
 				}
 			} else {
 				Character goal = null;
 
-				//when the character entered is a valid character name, go through the character list and get the battles the character participated in
-				if (validCNames.contains(cName.toLowerCase())) {
+				//if user inputs a character name, it checks whether the name is valid and returns the character information about that character 
+				if (cList.contains(new Character (cName,null,new sLinkedList<Battle>()))) {
 					for (int k = 0; k < cList.size(); k++) {
 						if (cList.get(k).name.equalsIgnoreCase(cName)) {
 							goal = cList.get(k);
 						}
 					}
 					if (goal != null) {
-						System.out.println(goal.toString());
+						System.out.println(goal);
 					}
-					
-				//if the character entered is not valid
-				} else if (!validCNames.contains(cName.toLowerCase())) {
+				
+				// if the user inputs an invalid character name, then the program notifies the user that the input is invalid.
+				} else if (!cList.contains(new Character (cName,null,new sLinkedList<Battle>()))) {
 					System.out.println("Character not found!" + '\n');
 				}
 			}
