@@ -1,4 +1,4 @@
-package project2;
+package project3;
 
 /**
  * This is a singly linked list class that has an embedded singly linked node class which has a generic element
@@ -15,7 +15,7 @@ public class sLinkedList<E extends Comparable<E>> {
 	 * This class extends Comparable<E>. 
 	 * @author Chrissy Jeon (jj2174)
 	 */
-	private static class Node<E extends Comparable<E>> {
+	private class Node<E extends Comparable<E>> {
 		private E element;
 		private Node<E> next;
 
@@ -171,7 +171,7 @@ public class sLinkedList<E extends Comparable<E>> {
 	 * This checks whether the singly linked list is sorted and returns boolean value
 	 * @return boolean (true : sorted, false : not sorted)
 	 */
-	private boolean isSorted() {
+	public boolean isSorted() {
 		for (int i = 0; i < this.size() - 1; i++) {
 			if (this.get(i).compareTo(this.get(i + 1)) > 0) {
 				return false;
@@ -271,7 +271,7 @@ public class sLinkedList<E extends Comparable<E>> {
 	 * @return (true : if exist, false : if doesn't exist)
 	 */
 	private boolean linearSearch(Node<E> n, E find) {
-		Node current = n;
+		Node<E> current = n;
 		while (current != null) {
 			if (current.element.compareTo(find) == 0) {
 				return true;

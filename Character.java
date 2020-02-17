@@ -1,4 +1,4 @@
-package project2;
+package project3;
 
 /**
  * Character class holds all the information for a given character.
@@ -8,6 +8,10 @@ public class Character implements Comparable<Character> {
 	String name;
 	String allegiances;
 	sLinkedList<Battle> battles;
+	private String fatherName; 
+	private String motherName; 
+	private boolean isPatriarch; 
+	private boolean isMatriarch;
 
 	/**
 	 * A character constructor that takes in three parameters.
@@ -17,8 +21,10 @@ public class Character implements Comparable<Character> {
 	 * @param allegiances (allegiances of the character)
 	 * @param characterBattles (battles related to character)
 	 */
-	public Character(String name, String allegiances, sLinkedList<Battle> characterBattles) {
+	public Character(String name, String fatherName, String motherName, String allegiances, sLinkedList<Battle> characterBattles) {
 		this.name = name;
+		this.fatherName = fatherName;
+		this.motherName = motherName;
 		this.allegiances = allegiances;
 		this.battles = new sLinkedList<Battle>();
 
@@ -34,10 +40,9 @@ public class Character implements Comparable<Character> {
 					this.battles.addLast(characterBattles.get(i));
 				}
 			}battles.sort();
-		}else {
 		}
 	}
-
+	
 	/**
 	 * Returns battles
 	 * @return battles (battles relating to character)
@@ -52,6 +57,30 @@ public class Character implements Comparable<Character> {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Returns the allegiances
+	 * @return allegiances (name of the house)
+	 */
+	public String getAllegiances() {
+		return allegiances;
+	}
+	
+	/**
+	 * Returns the father name
+	 * @return fatherName (name of the father)
+	 */
+	public String getfatherName() {
+		return fatherName;
+	}
+	
+	/**
+	 * Returns the mother name
+	 * @return motherName (name of the mother)
+	 */
+	public String getMotherName() {
+		return motherName;
 	}
 
 	/**
@@ -78,5 +107,29 @@ public class Character implements Comparable<Character> {
 	 */
 	public String toString() {
 		return (name + " with allegiance to " + allegiances + '\n' + this.battles.toString());
+	}
+	
+	/**
+	 * checks whether the character is patriarch and returns boolean value
+	 * @return boolean (true : patriarch, false : not patriarch)
+	 */
+	public boolean isPatriarch() {
+		if (this.fatherName.equals("PATRIARCH")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * checks whether the character is matriarch and returns boolean value
+	 * @return boolean (true : matriarch, false : not matriarch)
+	 */
+	public boolean isMatriarch() {
+		if (this.motherName.equals("MATRIARCH")) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 }
